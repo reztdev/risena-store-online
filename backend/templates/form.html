@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Produk Baru' if baru else 'Edit Produk' }}{% endblock %}
+{% block body %}
+<a class="muted back" href="{{ url_for('dashboard') }}">← Kembali</a>
+<h1>{{ 'Produk Baru' if baru else 'Edit Produk' }}</h1>
+<form class="card form" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <div class="grid2">
+    <label>Nama produk<input name="nama" value="{{ p.nama }}" required></label>
+    <label>Kategori<input name="kategori" value="{{ p.kategori }}" list="kat" placeholder="Tas / Dompet / Souvenir" required>
+      <datalist id="kat">{% for k in kategori %}<option value="{{ k }}">{% endfor %}</datalist></label>
+    <label>Harga (Rp)<input name="harga" inputmode="numeric" value="{{ p.harga }}" placeholder="89000" required></label>
+    <label>Jumlah terjual<input name="terjual" inputmode="numeric" value="{{ p.terjual }}"></label>
+    <label>Label<select name="tag">{% for k, v in TAGS.items() %}<option value="{{ k }}" {{ 'selected' if p.tag == k }}>{{ v }}</option>{% endfor %}</select></label>
+    <label>Ikon (jika belum ada foto)<select name="ikon">{% for k, v in ICONS.items() %}<option value="{{ k }}" {{ 'selected' if p.ikon == k }}>{{ v }}</option>{% endfor %}</select></label>
+  </div>
+  <label>Foto produk <span class="muted">(JPG/PNG/WEBP, rasio 4:5 disarankan; otomatis diperkecil)</span>
+    <div class="preview" id="prev" {% if p.foto %}style="background-image:url('/{{ p.foto }}')"{% endif %}>{% if not p.foto %}Belum ada foto{% endif %}</div>
+    <input type="file" name="foto" accept="image/png,image/jpeg,image/webp" data-preview="prev"></label>
+  {% if p.foto %}<label class="chk"><input type="checkbox" name="hapus_foto"> Hapus foto saat ini</label>{% endif %}
+  <label>Deskripsi<textarea name="deskripsi" rows="4">{{ p.deskripsi }}</textarea></label>
+  <label>Spesifikasi <span class="muted">(satu baris satu item, format Nama: Isi)</span>
+    <textarea name="spesifikasi" rows="5" placeholder="Ukuran: 38 x 35 x 10 cm&#10;Bahan: Kanvas + batik cap&#10;Berat: 300 g">{{ p.spesifikasi|join('\n') }}</textarea></label>
+  <label class="chk"><input type="checkbox" name="aktif" {{ 'checked' if p.aktif is not defined or p.aktif }}> Tampilkan di toko</label>
+  <div class="end"><a class="btn o" href="{{ url_for('dashboard') }}">Batal</a><button class="btn">Simpan</button></div>
+</form>
+{% endblock %}

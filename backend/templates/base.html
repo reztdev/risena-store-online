@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{% block title %}Admin{% endblock %} · Batikku</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+{% if session.admin %}
+<header class="top">
+  <a class="brand" href="{{ url_for('dashboard') }}">Batikku <small>Admin</small></a>
+  <nav>
+    <a href="{{ url_for('dashboard') }}">Produk</a>
+    <a href="{{ url_for('pesanan') }}">Pesanan{% if pending %} <span class="badge">{{ pending }}</span>{% endif %}</a>
+    <a href="{{ url_for('settings') }}">Pengaturan</a>
+    <a href="/" target="_blank">Lihat Toko ↗</a>
+    <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="link">Keluar</button></form>
+  </nav>
+</header>
+{% endif %}
+<main class="wrap">
+  {% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% block body %}{% endblock %}
+</main>
+<script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>

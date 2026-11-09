@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Pesanan{% endblock %}
+{% block body %}
+<div class="bar">
+  <div><h1>Pesanan</h1><p class="muted">{{ counts.values()|sum }} pesanan · omzet selesai {{ omzet|rupiah }}</p></div>
+  <div class="bar-r">
+    <form method="get" style="display:flex;gap:8px"><input type="hidden" name="status" value="{{ st }}"><input name="q" value="{{ q }}" placeholder="Cari ID atau nama…"><button class="btn o">Cari</button></form>
+    <a class="btn o" href="{{ url_for('pesanan_csv') }}">Ekspor CSV</a>
+    <a class="btn" href="{{ url_for('pesanan_baru') }}">+ Pesanan Manual</a>
+  </div>
+</div>
+<div class="tabs">
+  <a href="{{ url_for('pesanan') }}" class="{{ 'on' if not st }}">Semua</a>
+  {% for k, v in STATUS.items() %}<a href="{{ url_for('pesanan', status=k) }}" class="{{ 'on' if st == k }}">{{ v }} ({{ counts.get(k, 0) }})</a>{% endfor %}
+</div>
+{% for o in orders %}
+<div class="oc">
+  <div class="hd"><div><b>{{ o.id }}</b> <span class="muted">· {{ o.created }}</span></div><span class="st st-{{ o.status }}">{{ STATUS[o.status] }}</span></div>
+  <p style="margin:8px 0 0"><b>{{ o.nama or '(nama belum diisi)' }}</b> <span class="muted">· {{ o.metode or '-' }}</span></p>
+  <div class="addr">{{ o.alamat or '(alamat belum diisi)' }}</div>
+  <ul>{% for i in o["items"] %}<li>{{ i.nama }} <span class="muted">({{ i.motif or '-' }})</span> × {{ i.qty }} — {{ (i.harga * i.qty)|rupiah }}</li>{% endfor %}</ul>
+  <div class="tot"><span class="muted">Subtotal {{ o.total|rupiah }}{% if o.ongkir %} + ongkir {{ o.ongkir|rupiah }}{% endif %}</span><b>{{ (o.total + o.ongkir)|rupiah }}</b></div>
+  <form method="post" action="{{ url_for('pesanan_update', oid=o.id) }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="back" value="{{ st }}">
+    <div class="of">
+      <label>Status<select name="status">{% for k, v in STATUS.items() %}<option value="{{ k }}" {{ 'selected' if o.status == k }}>{{ v }}</option>{% endfor %}</select></label>
+      <label>Ongkir (Rp)<input name="ongkir" inputmode="numeric" value="{{ o.ongkir or '' }}"></label>
+      <label>No. resi<input name="resi" value="{{ o.resi }}"></label>
+      <label class="wide">Catatan<input name="catatan" value="{{ o.catatan }}" placeholder="Misalnya: DP sudah masuk, kirim Jumat"></label>
+    </div>
+    <div class="end" style="margin-top:14px"><button class="btn sm">Simpan</button></div>
+  </form>
+  <form method="post" action="{{ url_for('pesanan_hapus', oid=o.id) }}" data-confirm="Hapus pesanan {{ o.id }}?" style="margin-top:-30px">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="back" value="{{ st }}"><button class="btn sm danger">Hapus</button>
+  </form>
+</div>
+{% else %}
+<p class="muted" style="padding:40px 0;text-align:center">Belum ada pesanan{% if st or q %} untuk filter ini{% endif %}.<br>Pesanan dari toko tercatat otomatis saat pembeli menekan “Pesan via WhatsApp”.</p>
+{% endfor %}
+{% endblock %}

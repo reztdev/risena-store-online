@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Pesanan Manual{% endblock %}
+{% block body %}
+<a class="muted back" href="{{ url_for('pesanan') }}">← Kembali</a>
+<h1>Pesanan Manual</h1>
+<p class="muted">Untuk mencatat pesanan yang masuk langsung lewat chat WhatsApp.</p>
+<form class="card form" method="post" style="margin-top:14px">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <div class="grid2"><label>Nama pembeli<input name="nama"></label>
+    <label>Pembayaran<select name="metode"><option>Transfer Bank</option><option>QRIS</option><option>Lainnya</option></select></label></div>
+  <label>Alamat<textarea name="alamat" rows="2"></textarea></label>
+  <h2>Item</h2>
+  {% for i in range(6) %}
+  <div class="grid2" style="grid-template-columns:2fr 1fr 60px;gap:10px;display:grid">
+    <label>{{ 'Produk' if i == 0 else '' }}<select name="p_{{ i }}"><option value="">—</option>{% for p in prods %}<option value="{{ p.id }}">{{ p.nama }} · {{ p.harga|rupiah }}</option>{% endfor %}</select></label>
+    <label>{{ 'Motif' if i == 0 else '' }}<input name="m_{{ i }}" placeholder="Kawung"></label>
+    <label>{{ 'Qty' if i == 0 else '' }}<input name="q_{{ i }}" inputmode="numeric" value="1"></label>
+  </div>
+  {% endfor %}
+  <div class="end"><a class="btn o" href="{{ url_for('pesanan') }}">Batal</a><button class="btn">Simpan Pesanan</button></div>
+</form>
+{% endblock %}

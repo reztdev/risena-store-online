@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Pengaturan{% endblock %}
+{% block body %}
+<h1>Pengaturan</h1>
+<form class="card form" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <label>Nomor WhatsApp toko <span class="muted">(awali 62, contoh 6281234567890)</span><input name="wa" value="{{ d.wa }}" inputmode="numeric" required></label>
+  <h2>Banner Beranda</h2>
+  <p class="muted">Kosongkan slogan, judul, dan foto untuk menghilangkan banner. Foto banner disarankan landscape (16:9).</p>
+  {% for b in slots %}
+  <fieldset>
+    <legend>Banner {{ loop.index }}</legend>
+    <label>Slogan kecil<input name="atas_{{ loop.index0 }}" value="{{ b.atas }}"></label>
+    <label>Judul besar<input name="judul_{{ loop.index0 }}" value="{{ b.judul }}"></label>
+    <input type="hidden" name="foto_lama_{{ loop.index0 }}" value="{{ b.foto }}">
+    <div class="preview wide" id="pb{{ loop.index0 }}" {% if b.foto %}style="background-image:url('/{{ b.foto }}')"{% endif %}>{% if not b.foto %}Belum ada foto{% endif %}</div>
+    <input type="file" name="foto_{{ loop.index0 }}" accept="image/png,image/jpeg,image/webp" data-preview="pb{{ loop.index0 }}">
+    {% if b.foto %}<label class="chk"><input type="checkbox" name="hapus_{{ loop.index0 }}"> Hapus foto banner ini</label>{% endif %}
+  </fieldset>
+  {% endfor %}
+  <div class="end"><button class="btn">Simpan Pengaturan</button></div>
+</form>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Produk{% endblock %}
+{% block body %}
+{% if default_pw %}<div class="flash err">Password masih bawaan (admin123). Ganti lewat file <b>backend/.env</b> sebelum dipakai publik.</div>{% endif %}
+<div class="bar">
+  <div><h1>Produk</h1><p class="muted">{{ produk|length }} produk</p></div>
+  <div class="bar-r"><input id="cari" type="search" placeholder="Cari produk…"><a class="btn" href="{{ url_for('produk_baru') }}">+ Produk Baru</a></div>
+</div>
+<div class="list" id="list">
+{% for p in produk %}
+  <div class="row {{ '' if p.aktif is not defined or p.aktif else 'off' }}" data-nama="{{ p.nama|lower }} {{ p.kategori|lower }}">
+    <div class="thumb" {% if p.foto %}style="background-image:url('/{{ p.foto }}')"{% endif %}>{% if not p.foto %}Tanpa foto{% endif %}</div>
+    <div class="info">
+      <b>{{ p.nama }}</b>
+      <span class="muted">{{ p.kategori }} · {{ p.harga|rupiah }}{% if p.tag %} · {{ TAGS[p.tag] }}{% endif %}</span>
+      {% if p.aktif is defined and not p.aktif %}<span class="pill">Disembunyikan</span>{% endif %}
+    </div>
+    <div class="acts">
+      <a class="btn sm o" href="{{ url_for('produk_edit', pid=p.id) }}">Edit</a>
+      <form method="post" action="{{ url_for('produk_toggle', pid=p.id) }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="btn sm o">{{ 'Tampilkan' if p.aktif is defined and not p.aktif else 'Sembunyikan' }}</button></form>
+      <form method="post" action="{{ url_for('produk_hapus', pid=p.id) }}" data-confirm="Hapus produk “{{ p.nama }}”? Tindakan ini tidak bisa dibatalkan."><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="btn sm danger">Hapus</button></form>
+    </div>
+  </div>
+{% else %}
+  <p class="muted" style="padding:40px 0;text-align:center">Belum ada produk. Klik “+ Produk Baru”.</p>
+{% endfor %}
+</div>
+{% endblock %}
