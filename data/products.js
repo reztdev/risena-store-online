@@ -1,5 +1,5 @@
 window.BATIKKU = {
-  "wa": "6281234567890",
+  "wa": "6287715947402",
   "banner": [
     {
       "atas": "Handmade dengan sepenuh hati",
