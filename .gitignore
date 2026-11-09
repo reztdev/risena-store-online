@@ -1,0 +1,6 @@
+backend/.env
+backend/backup/
+__pycache__/
+*.pyc
+.venv/
+backend/pesanan.db
