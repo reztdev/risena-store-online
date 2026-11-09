@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>{% block title %}Admin{% endblock %} · Batikku</title>
+<title>{% block title %}Admin{% endblock %} · Risena</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
 </head>
 <body>
 {% if session.admin %}
 <header class="top">
-  <a class="brand" href="{{ url_for('dashboard') }}">Batikku <small>Admin</small></a>
+  <a class="brand" href="{{ url_for('dashboard') }}">Risena <small>Admin</small></a>
   <nav>
     <a href="{{ url_for('dashboard') }}">Produk</a>
     <a href="{{ url_for('pesanan') }}">Pesanan{% if pending %} <span class="badge">{{ pending }}</span>{% endif %}</a>
