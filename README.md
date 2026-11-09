@@ -1,4 +1,4 @@
-# Batikku – Toko Handmade Batik (Prototipe)
+# Risena – Toko Handmade Batik (Prototipe)
 
 Website katalog dengan checkout via WhatsApp (CTWA). Bisa dijalankan **tanpa backend** (statis)
 atau **dengan backend Flask** (admin panel untuk upload, edit, hapus produk).
