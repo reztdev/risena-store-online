@@ -1,4 +1,4 @@
-"""Batikku – backend Flask: admin panel + penyaji website.
+"""Risena – backend Flask: admin panel + penyaji website.
 
 Jalankan:  python app.py   →  toko di http://localhost:5000 , admin di /admin
 Data produk disimpan di ../data/products.js (format sama dengan yang dibaca website statis),
