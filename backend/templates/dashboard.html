@@ -12,7 +12,7 @@
     <div class="thumb" {% if p.foto %}style="background-image:url('/{{ p.foto }}')"{% endif %}>{% if not p.foto %}Tanpa foto{% endif %}</div>
     <div class="info">
       <b>{{ p.nama }}</b>
-      <span class="muted">{{ p.kategori }} · {{ p.harga|rupiah }}{% if p.tag %} · {{ TAGS[p.tag] }}{% endif %}</span>
+      <span class="muted">{{ p.kategori }} · {{ p.harga|rupiah }}{% if p.harga_coret %} <s>{{ p.harga_coret|rupiah }}</s>{% endif %}{% if p.tag %} · {{ TAGS[p.tag] }}{% endif %}</span>
       {% if p.aktif is defined and not p.aktif %}<span class="pill">Disembunyikan</span>{% endif %}
     </div>
     <div class="acts">
