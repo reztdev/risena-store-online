@@ -1,4 +1,4 @@
-"""Risena – backend Flask: admin panel + penyaji website.
+"""Batikku – backend Flask: admin panel + penyaji website.
 
 Jalankan:  python app.py   →  toko di http://localhost:5000 , admin di /admin
 Data produk disimpan di ../data/products.js (format sama dengan yang dibaca website statis),
@@ -118,6 +118,9 @@ def parse_product(form):
         "ikon": form.get("ikon") if form.get("ikon") in ICONS else "bag",
         "tag": form.get("tag") if form.get("tag") in TAGS else "",
         "terjual": to_int(form.get("terjual")),
+        "harga_coret": to_int(form.get("harga_coret")),
+        "label_diskon": form.get("label_diskon", "").strip()[:20],
+        "shopee": form.get("shopee", "").strip(),
         "aktif": form.get("aktif") == "on",
         "deskripsi": form.get("deskripsi", "").strip(),
         "spesifikasi": [l.strip() for l in form.get("spesifikasi", "").splitlines() if ":" in l],
@@ -129,12 +132,17 @@ def parse_product(form):
         errors.append("Kategori wajib diisi.")
     if p["harga"] <= 0:
         errors.append("Harga harus lebih dari 0.")
+    if p["harga_coret"] and p["harga_coret"] <= p["harga"]:
+        errors.append("Harga coret harus lebih besar dari harga sekarang (atau kosongkan).")
+    if p["shopee"] and not re.match(r"https?://", p["shopee"], re.I):
+        errors.append("Link Shopee harus diawali http:// atau https://")
     return p, errors
 
 
 def blank():
     return {"nama": "", "kategori": "", "harga": "", "ikon": "bag", "tag": "", "terjual": 0,
-            "aktif": True, "deskripsi": "", "spesifikasi": [], "foto": ""}
+            "aktif": True, "deskripsi": "", "spesifikasi": [], "foto": "",
+            "harga_coret": "", "label_diskon": "", "shopee": ""}
 
 
 def find(data, pid):
@@ -437,6 +445,8 @@ def api_pesanan():
         return jsonify(ok=False), 400
     nama, alamat = str(j.get("nama", "")).strip()[:80], str(j.get("alamat", "")).strip()[:400]
     metode = str(j.get("metode", "")).strip()[:40]
+    if len(nama) < 2 or len(alamat) < 8:   # nama dan alamat wajib
+        return jsonify(ok=False, error="nama dan alamat wajib"), 400
     total = sum(i["harga"] * i["qty"] for i in items)
     dup = db("SELECT 1 FROM orders WHERE (id=? OR (nama=? AND alamat=? AND total=? AND created>=?))",
              (oid, nama, alamat, total, f"{datetime.fromtimestamp(now - 900):%Y-%m-%d %H:%M}"), one=True)
