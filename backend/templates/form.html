@@ -10,10 +10,13 @@
     <label>Kategori<input name="kategori" value="{{ p.kategori }}" list="kat" placeholder="Tas / Dompet / Souvenir" required>
       <datalist id="kat">{% for k in kategori %}<option value="{{ k }}">{% endfor %}</datalist></label>
     <label>Harga (Rp)<input name="harga" inputmode="numeric" value="{{ p.harga }}" placeholder="89000" required></label>
+    <label>Harga coret (Rp) <span class="muted">(opsional)</span><input name="harga_coret" inputmode="numeric" value="{{ p.harga_coret or '' }}" placeholder="105000"></label>
+    <label>Label diskon <span class="muted">(kosong = otomatis, misal -15%)</span><input name="label_diskon" maxlength="20" value="{{ p.label_diskon or '' }}" placeholder="Promo Gajian"></label>
     <label>Jumlah terjual<input name="terjual" inputmode="numeric" value="{{ p.terjual }}"></label>
-    <label>Label<select name="tag">{% for k, v in TAGS.items() %}<option value="{{ k }}" {{ 'selected' if p.tag == k }}>{{ v }}</option>{% endfor %}</select></label>
+    <label>Label produk<select name="tag">{% for k, v in TAGS.items() %}<option value="{{ k }}" {{ 'selected' if p.tag == k }}>{{ v }}</option>{% endfor %}</select></label>
     <label>Ikon (jika belum ada foto)<select name="ikon">{% for k, v in ICONS.items() %}<option value="{{ k }}" {{ 'selected' if p.ikon == k }}>{{ v }}</option>{% endfor %}</select></label>
   </div>
+  <label>Link Shopee <span class="muted">(opsional; kosong = tombol "Beli di Shopee" tidak tampil)</span><input name="shopee" value="{{ p.shopee or '' }}" placeholder="https://shopee.co.id/..."></label>
   <label>Foto produk <span class="muted">(JPG/PNG/WEBP, rasio 4:5 disarankan; otomatis diperkecil)</span>
     <div class="preview" id="prev" {% if p.foto %}style="background-image:url('/{{ p.foto }}')"{% endif %}>{% if not p.foto %}Belum ada foto{% endif %}</div>
     <input type="file" name="foto" accept="image/png,image/jpeg,image/webp" data-preview="prev"></label>
